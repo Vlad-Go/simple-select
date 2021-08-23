@@ -2,7 +2,7 @@
   "name": "simple-select",
   "version": "1.0.0",
   "description": "vanilla js select plugin",
-  "main": "index.js",
+  "main": "simple-select.js",
   "scripts": {
     "dev": "parcel src/index.html --open",
     "build": "parcel build  src/index.html>"
