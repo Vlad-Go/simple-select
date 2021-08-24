@@ -1,8 +1,3 @@
-body {
-  width: 500px;
-  margin: 100px auto;
-}
-
 .simple-select {
   width: 250px;
   background-color: #e2e2e2;
@@ -33,9 +28,7 @@ body {
   top: calc(100% + 5px);
   border: 1px solid transparent;
   border-radius: 5px;
-  // opacity: 0;
   &.opened {
-    // opacity: 1;
     background-color: #e2e2e2;
     border: 1px solid #d4d4d4;
   }

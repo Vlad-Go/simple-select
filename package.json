@@ -4,8 +4,7 @@
   "description": "vanilla js select plugin",
   "main": "simple-select.js",
   "scripts": {
-    "dev": "parcel src/index.html --open",
-    "build": "parcel build  src/index.html>"
+    "dev": "parcel src/demo/index.html --open"
   },
   "author": "Vlad-G",
   "license": "ISC",

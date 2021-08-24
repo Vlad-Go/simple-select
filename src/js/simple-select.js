@@ -1,53 +1,15 @@
-import './scss/style.scss';
+import {css, createNode, fadeIn, fadeOut, slideDown, slideUp} from './utils'
+import {DEFAULT_CLASS_NAME ,DEFAULT_ICON , DEFAULT_ANIM_TIME,
+  DEFAULT_SHOWN_OPTION, SLIDE_DOWN_ANIM, FADE_ANIM 
+} from './vars'
 
-const css = ($el, styles = {}) => {
-  Object.keys(styles).forEach((key)=>{
-    $el.style[key] = styles[key];
-  });
-}
-const createNode = (tag, className, styles, {place, content} = {}) => {
-  const $node = document.createElement(tag);
-  if(typeof className == "string") $node.className = className;
-  if(typeof styles == "object" && styles !==null) css($node, styles);
-  content && $node.insertAdjacentHTML(place,content);
-  return $node;
-}
-
-const fadeIn= ($el, itemHeightFunc) =>{
-  css($el, {display: 'block', opacity: '0'});
-  setTimeout(()=>{
-    css($el, {height: itemHeightFunc()});
-  },0);
-  setTimeout(()=>{
-    css($el, {opacity: '1'});
-  },0);
-}
-const fadeOut= ($el, animTime) =>{
-  css($el, {opacity: '0'});
-  setTimeout(()=>{
-    css($el, {display: 'none'});
-  },animTime);
-}
-const slideDown= ($el, itemHeightFunc) =>{
-  css($el, {display: 'block', height: '0'});
-  let itemHeight = itemHeightFunc();
-  setTimeout(()=> css($el, {height: '0'}),0);
-  setTimeout(()=> css($el, {height: `${itemHeight}`}),0);
-}
-const slideUp= ($el, animTime) =>{
-  css($el, {height: '0'});
-  setTimeout(()=>{
-    css($el, {display: 'none'});
-  },animTime);
-}
-
-class SimpleSelect {
+export default class SimpleSelect {
   constructor($el, {className, icon, animation, animTime, optionToShow}) {
-    this.className = className || 'simple-select';
-    this.icon = icon || '<svg viewBox="0 0 492 492" width="13px" xmlns="http://www.w3.org/2000/svg"><path d="M484.13 124.99l-16.116-16.228c-5.072-5.068-11.82-7.86-19.032-7.86-7.208 0-13.964 2.792-19.036 7.86l-183.84 183.85-184.05-184.05c-5.064-5.068-11.82-7.856-19.028-7.856s-13.968 2.788-19.036 7.856L7.872 124.69c-10.496 10.488-10.496 27.572 0 38.06l219.14 219.92c5.064 5.064 11.812 8.632 19.084 8.632h.084c7.212 0 13.96-3.572 19.024-8.632l218.93-219.33c5.072-5.064 7.856-12.016 7.864-19.224 0-7.212-2.792-14.068-7.864-19.128z"/></svg>';
-    this.animation = animation || 'slideDown';
-    this.animTime = animTime || .3;
-    this.optionToShow = optionToShow || 'all';
+    this.className = className || DEFAULT_CLASS_NAME;
+    this.icon = icon || DEFAULT_ICON;
+    this.animation = animation || SLIDE_DOWN_ANIM;
+    this.animTime = animTime || DEFAULT_ANIM_TIME;
+    this.optionToShow = optionToShow || DEFAULT_SHOWN_OPTION;
 
     this.$select = $el;
     this.$options = Array.from($el.querySelectorAll('option'));
@@ -71,7 +33,7 @@ class SimpleSelect {
   }
   _calcListHeight() {
     return this.$options.reduce((acc, $o, i) => {
-      if (i >= this.optionToShow && this.optionToShow !== 'all') return acc;
+      if (i >= this.optionToShow && this.optionToShow !== DEFAULT_SHOWN_OPTION) return acc;
       return acc += $o.getBoundingClientRect().height;
     },0).toFixed(2) + 'px';
   }
@@ -187,7 +149,7 @@ class SimpleSelect {
         this.close();
       }
     });
-    if (this.optionToShow !== 'all') {
+    if (this.optionToShow !== DEFAULT_SHOWN_OPTION) {
       this.$options.forEach(o=> css(o, {paddingRight : '20px'}))
       // for scrollbar
     }
@@ -218,9 +180,9 @@ class SimpleSelect {
 
     $optionsList.classList.add('opened');
 
-    if (this.animation === 'slideDown') {
+    if (this.animation === SLIDE_DOWN_ANIM) {
       slideDown($optionsList, this._calcListHeight.bind(this))
-    } else if (this.animation === 'fade') {
+    } else if (this.animation === FADE_ANIM) {
       fadeIn($optionsList, this._calcListHeight.bind(this))
     }
     css($iconWrapper, {transform: 'rotate(-180deg)'});
@@ -231,9 +193,9 @@ class SimpleSelect {
     const $iconWrapper = this._get('icon');
 
     $optionsList.classList.remove('opened');
-    if (this.animation === 'slideDown') {
+    if (this.animation === SLIDE_DOWN_ANIM) {
       slideUp($optionsList, this.animTime)
-    } else if (this.animation === 'fade') {
+    } else if (this.animation === FADE_ANIM) {
       fadeOut($optionsList, this.animTime)
     }
    
@@ -246,14 +208,3 @@ class SimpleSelect {
     };
   }
 }
-// ===================================
-
-
-new SimpleSelect(document.querySelector('.header__select'),
-{
-  // className: '',        // 'simple-select'
-  // icon: '',             // '<svg viewBox="0 0 492 492" width="13px" xmlns="http://www.w3.org/2000/svg"><path d="M484.13 124.99l-16.116-16.228c-5.072-5.068-11.82-7.86-19.032-7.86-7.208 0-13.964 2.792-19.036 7.86l-183.84 183.85-184.05-184.05c-5.064-5.068-11.82-7.856-19.028-7.856s-13.968 2.788-19.036 7.856L7.872 124.69c-10.496 10.488-10.496 27.572 0 38.06l219.14 219.92c5.064 5.064 11.812 8.632 19.084 8.632h.084c7.212 0 13.96-3.572 19.024-8.632l218.93-219.33c5.072-5.064 7.856-12.016 7.864-19.224 0-7.212-2.792-14.068-7.864-19.128z"/></svg>'
-   optionToShow: 4,    //'all' 3 5
-   animation:'slideDown',       //  'slideDown' 'fade'
-   animTime: 400            // '.3'               
-}).render();
